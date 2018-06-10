@@ -3,7 +3,6 @@ const shouldRevert = require("./helpers/shouldRevert")
 const BasicToken = artifacts.require("BasicToken")
 
 contract("BasicToken", (accounts) => {
-  const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000"
 
   const alice = accounts[0]
   const bob = accounts[1]
@@ -59,7 +58,7 @@ contract("BasicToken", (accounts) => {
       const initialSupply = 100
       const basicToken = await BasicToken.new(initialSupply)
 
-      const address = ADDRESS_ZERO
+      const address = 0
       const amount = 49
       const q = basicToken.transfer(address, amount, { from: alice })
 
@@ -93,6 +92,29 @@ contract("BasicToken", (accounts) => {
 
       assert(balanceOfBob == amount,
         "bob's balance should add the transfer amount")
+    })
+
+    it("emits Transfer event", async () => {
+      const initialSupply = 100
+      const basicToken = await BasicToken.new(initialSupply)
+
+      const amount = 45
+      const { logs } = await basicToken.transfer(bob, amount, { from: alice })
+
+      const log = logs[0]
+
+      assert(log.event == "Transfer",
+        "log event should be Transfer")
+
+      assert(log.args.from == alice,
+        "alice should be the sender")
+
+      assert(log.args.to == bob,
+        "bob should be the recipient")
+
+      assert(log.args.value == amount,
+        "transfer amount should be the same")
+
     })
   })
 })

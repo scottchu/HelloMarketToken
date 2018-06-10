@@ -26,7 +26,7 @@ contract BasicToken is Token {
     balances[msg.sender] = balances[msg.sender].sub(_value);
     balances[_to] = balances[_to].add(_value);
 
-    emit Transfer(msg.sender, _to, -_value);
+    emit Transfer(msg.sender, _to, _value);
   }
 
   function balanceOf(address _owner) public view returns (uint256) {
