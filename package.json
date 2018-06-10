@@ -9,7 +9,12 @@
     "zeppelin-solidity": "^1.10.0"
   },
   "scripts": {
+    "ganache.cli": "ganache-cli",
+    "ganache.gui": "/Applications/Ganache.app/Contents/MacOS/ganache </dev/null &>/dev/null &",
     "truffle": "truffle",
-    "ganache": "ganache-cli"
+    "truffle.migrate": "truffle",
+    "wallet.reset": "rm -rf /Users/scottchu/Library/Application\\ Support/Ethereum\\ Wallet/*",
+    "wallet.start": "/Applications/Ethereum\\ Wallet.app/Contents/MacOS/Ethereum\\ Wallet --rpc \"http://127.0.0.1:7545\" </dev/null &>/dev/null &",
+    "wallet": "yarn wallet.reset && yarn wallet.start"
   }
 }
