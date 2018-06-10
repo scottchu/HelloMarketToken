@@ -2,7 +2,7 @@ const shouldRevert = require("./helpers/shouldRevert")
 
 const HelloMarketToken = artifacts.require("HelloMarketToken")
 
-contract.only("HelloMarketToken", (accounts) => {
+contract("HelloMarketToken", (accounts) => {
 
   const alice = accounts[0]
   const bob = accounts[1]
