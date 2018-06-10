@@ -15,8 +15,6 @@ contract("Ownable", (accounts) => {
       "Bob should be the owner")
   })
 
-
-
   describe("transferOwnership", () => {
     it("transfers ownership when call by owner", async () => {
       const ownable = await Ownable.new({ from: alice })
