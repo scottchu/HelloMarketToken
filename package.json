@@ -15,7 +15,7 @@
     "truffle": "truffle",
     "truffle.migrate": "truffle migrate --compile-all --reset",
     "wallet.reset": "rm -rf /Users/scottchu/Library/Application\\ Support/Ethereum\\ Wallet/*",
-    "wallet.start": "/Applications/Ethereum\\ Wallet.app/Contents/MacOS/Ethereum\\ Wallet --rpc \"http://127.0.0.1:7545\" </dev/null &>/dev/null &",
+    "wallet.start": "/Applications/Ethereum\\ Wallet.app/Contents/MacOS/Ethereum\\ Wallet --rpc \"http://127.0.0.1:8545\" </dev/null &>/dev/null &",
     "wallet": "yarn wallet.reset && yarn wallet.start"
   }
 }
