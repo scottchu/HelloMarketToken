@@ -6,7 +6,7 @@ import "./Ownable.sol";
 contract MintableToken is BasicToken, Ownable {
   event Mint(address indexed to, uint256 amount);
 
-  constructor(uint _initialSupply)
+  constructor(uint256 _initialSupply)
     BasicToken(_initialSupply)
     public {}
 
