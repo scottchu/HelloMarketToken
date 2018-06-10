@@ -9,20 +9,20 @@ contract("BasicToken", (accounts) => {
 
   it("sets totalSupply to initialSupply on start", async () => {
     const initialSupply = 100
-      const basicToken = await BasicToken.new(initialSupply)
-      const totalSupply = await basicToken.totalSupply()
+    const basicToken = await BasicToken.new(initialSupply)
+    const totalSupply = await basicToken.totalSupply()
 
-      assert(totalSupply == initialSupply,
-        "total supply should equals to initial supply")
+    assert(totalSupply == initialSupply,
+      "total supply should equals to initial supply")
   })
 
   it("gives initialSupply to message sender on start", async () => {
     const initialSupply = 100
-      const basicToken = await BasicToken.new(initialSupply, { from: alice })
-      const balance = await basicToken.balances(alice)
+    const basicToken = await BasicToken.new(initialSupply, { from: alice })
+    const balance = await basicToken.balances(alice)
 
-      assert(balance == initialSupply,
-        "alice should have all initial supply")
+    assert(balance == initialSupply,
+      "alice should have all initial supply")
   })
 
   describe("totalSupply", () => {
