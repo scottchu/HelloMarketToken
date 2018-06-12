@@ -37,16 +37,17 @@ contract("HelloMarketToken", (accounts) => {
 
       const talkMessage = "hello world!"
       await token.talk(talkMessage, { from: alice })
+      await token.talk(talkMessage, { from: alice })
 
       const balance = await token.balanceOf(alice)
 
       const ledger = await token.ledger()
 
-      assert(balance == (initialSupply - 1),
-        "alice's balance should decrease by the 1")
+      assert(balance == (initialSupply - 2),
+        "alice's balance should decrease by the 2")
 
-      assert(ledger == 1,
-        "ledger should increase by the 1")
+      assert(ledger == 2,
+        "ledger should increase by the 2")
     })
 
     it("emits a Talk event", async () => {

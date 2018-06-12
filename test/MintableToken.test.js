@@ -7,10 +7,18 @@ contract("MintableToken", (accounts) => {
   const alice = accounts[0]
   const bob = accounts[1]
 
+  const name = "Mintable"
+  const symbol = "M&M"
+  const initialSupply = 99;
+
   describe("mint", () => {
-    it("prevents non-owner from mint", async () => {
-      const initialSupply = 0
-      const token = await MintableToken.new(initialSupply, { from: alice })
+    it("prevents bob (non-owner) from mint", async () => {
+      const token = await MintableToken.new(
+        name,
+        symbol,
+        initialSupply,
+        { from: alice }
+      )
 
       const mintSupply = 100
       const q = token.mint(alice, mintSupply, { from: bob })
@@ -20,8 +28,12 @@ contract("MintableToken", (accounts) => {
     })
 
     it("adds newly minted tokens to total supply", async () => {
-      const initialSupply = 0
-      const token = await MintableToken.new(initialSupply, { from: alice })
+      const token = await MintableToken.new(
+        name,
+        symbol,
+        initialSupply,
+        { from: alice }
+      )
 
       const mintSupply = 100
       await token.mint(alice, mintSupply, { from: alice })
@@ -33,21 +45,29 @@ contract("MintableToken", (accounts) => {
     })
 
     it("adds newly minted token to the recipient", async () => {
-      const initialSupply = 0
-      const token = await MintableToken.new(initialSupply, { from: alice })
+      const token = await MintableToken.new(
+        name,
+        symbol,
+        initialSupply,
+        { from: alice }
+      )
 
       const mintSupply = 100
       await token.mint(bob, mintSupply, { from: alice })
 
       const balance = await token.balanceOf(bob)
 
-      assert(balance == (initialSupply + mintSupply),
+      assert(balance == mintSupply,
         "bob should receive new minted tokens")
     })
 
     it("emits a Mint event", async () => {
-      const initialSupply = 0
-      const token = await MintableToken.new(initialSupply, { from: alice })
+      const token = await MintableToken.new(
+        name,
+        symbol,
+        initialSupply,
+        { from: alice }
+      )
 
       const mintSupply = 100
       const { logs } = await token.mint(bob, mintSupply, { from: alice })
@@ -65,8 +85,12 @@ contract("MintableToken", (accounts) => {
     })
 
     it("emits a Transfer event", async () => {
-      const initialSupply = 0
-      const token = await MintableToken.new(initialSupply, { from: alice })
+      const token = await MintableToken.new(
+        name,
+        symbol,
+        initialSupply,
+        { from: alice }
+      )
 
       const mintSupply = 100
       const { logs } = await token.mint(bob, mintSupply, { from: alice })

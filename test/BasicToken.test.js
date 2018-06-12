@@ -7,85 +7,134 @@ contract("BasicToken", (accounts) => {
   const alice = accounts[0]
   const bob = accounts[1]
 
-  it("sets totalSupply to initialSupply on start", async () => {
-    const initialSupply = 100
-    const basicToken = await BasicToken.new(initialSupply)
-    const totalSupply = await basicToken.totalSupply()
+  const name = "TestToken"
+  const symbol = "TT"
+  const initialSupply = 100;
 
-    assert(totalSupply == initialSupply,
-      "total supply should equals to initial supply")
+  it("returns name, symbol, decimals, and totalSupply from getters", async () => {
+    const token = await BasicToken.new(
+      name,
+      symbol,
+      initialSupply
+    )
+
+    assert((await token.name()) == name,
+      "name should be the same")
+
+    assert((await token.symbol()) == symbol,
+      "symbol should be the same")
+
+    assert((await token.totalSupply()) == initialSupply,
+      "totalSupply should be the same")
   })
 
   it("gives initialSupply to message sender on start", async () => {
-    const initialSupply = 100
-    const basicToken = await BasicToken.new(initialSupply, { from: alice })
-    const balance = await basicToken.balances(alice)
+    const token = await BasicToken.new(
+      name,
+      symbol,
+      initialSupply,
+      { from: alice }
+    )
+
+    const balance = await token.balanceOf(alice)
 
     assert(balance == initialSupply,
       "alice should have all initial supply")
   })
 
-  describe("totalSupply", () => {
-    it("returns the total amount of tokens", async () => {
-      const initialSupply = 100
-      const basicToken = await BasicToken.new(initialSupply)
-      const totalSupply = await basicToken.totalSupply()
-
-      assert(totalSupply == initialSupply)
-    })
-  })
-
   describe("balanceOf", () => {
-    it("returns 0 for any account by default", async () => {
-      const initialSupply = 100
-      const basicToken = await BasicToken.new(initialSupply)
-      const balance = await basicToken.balanceOf(bob)
+    it(" returns 0 by default", async () => {
+      const token = await BasicToken.new(
+        name,
+        symbol,
+        initialSupply,
+        { from: alice }
+      )
 
-      assert(balance == 0)
+      const balance = await token.balanceOf(bob)
+
+      assert(balance == 0,
+        "bob should have balance 0")
     })
 
     it("returns the balance when account has some token", async () => {
-      const initialSupply = 100
-      const basicToken = await BasicToken.new(initialSupply)
-      const balance = await basicToken.balanceOf(alice)
+      const decimals = 18
+      const initialSupply = 99
 
-      assert(balance == initialSupply)
+      const token = await BasicToken.new(
+        name,
+        symbol,
+        initialSupply,
+        { from: alice }
+      )
+
+      const balance = await token.balanceOf(alice)
+
+      assert(balance == initialSupply,
+        "alice should have all 99 tokens")
     })
   })
 
   describe("transfer", () => {
     it("prevents transfer to Address<0>", async () => {
-      const initialSupply = 100
-      const basicToken = await BasicToken.new(initialSupply)
+      const token = await BasicToken.new(
+        name,
+        symbol,
+        initialSupply,
+        { from: alice }
+      )
 
       const address = 0
-      const amount = 49
-      const q = basicToken.transfer(address, amount, { from: alice })
+      const amount = 1
+      const q = token.transfer(address, amount, { from: alice })
 
       assert(await shouldRevert(q),
         "transfer to Address<0> should be prohibited")
     })
 
-    it("prevents transfer when sender does not have enough balance", async () => {
-      const initialSupply = 100
-      const basicToken = await BasicToken.new(initialSupply)
+    it("prevents transfer to sender self", async () => {
+      const token = await BasicToken.new(
+        name,
+        symbol,
+        initialSupply,
+        { from: alice }
+      )
 
-      const amount = 101
-      const q = basicToken.transfer(bob, amount, { from: alice })
+      const amount = 10
+      const q = token.transfer(alice, amount, { from: alice })
+
+      assert(await shouldRevert(q),
+        "wasting energy is prohibited")
+    })
+
+    it("prevents transfer when sender does not have enough balance", async () => {
+      const token = await BasicToken.new(
+        name,
+        symbol,
+        initialSupply,
+        { from: alice }
+      )
+
+      const amount = initialSupply + 1
+      const q = token.transfer(bob, amount, { from: alice })
 
       assert(await shouldRevert(q),
         "over spend should be prohibited")
     })
 
     it("transfers the requested amount when sender has enough balance", async () => {
-      const initialSupply = 100
-      const basicToken = await BasicToken.new(initialSupply)
+      const token = await BasicToken.new(
+        name,
+        symbol,
+        initialSupply,
+        { from: alice }
+      )
 
       const amount = 45
-      await basicToken.transfer(bob, amount, { from: alice })
+      await token.transfer(bob, amount, { from: alice })
 
-      const balanceOfAlice = await basicToken.balances(alice)
-      const balanceOfBob = await basicToken.balances(bob)
+      const balanceOfAlice = await token.balanceOf(alice)
+      const balanceOfBob = await token.balanceOf(bob)
 
       assert(balanceOfAlice == (initialSupply - amount),
         "alice's balance should deduct the transfer amount")
@@ -94,12 +143,17 @@ contract("BasicToken", (accounts) => {
         "bob's balance should add the transfer amount")
     })
 
+
     it("emits Transfer event", async () => {
-      const initialSupply = 100
-      const basicToken = await BasicToken.new(initialSupply)
+      const token = await BasicToken.new(
+        name,
+        symbol,
+        initialSupply,
+        { from: alice }
+      )
 
       const amount = 45
-      const { logs } = await basicToken.transfer(bob, amount, { from: alice })
+      const { logs } = await token.transfer(bob, amount, { from: alice })
 
       const log = logs[0]
 
