@@ -45,6 +45,15 @@ contract("Ownable", (accounts) => {
         "transfer ownership to Address<0> should be prevented")
     })
 
+    it("prevents transfer ownership to self", async () => {
+      const ownable = await Ownable.new({ from: alice })
+
+      const q = ownable.transferOwnership(alice)
+
+      assert(await shouldRevert(q),
+        "transfer ownership to self should be prevented")
+    })
+
     it("emits OwnershipTransferred event", async () => {
       const ownable = await Ownable.new({ from: alice })
 
